@@ -1,6 +1,7 @@
 from tictactoe import TicTacToe
 
 obj = TicTacToe()
+obj.__int__()
 for step in range(obj.number_of_steps):
     user_input = ''
     if step % 2 == 0:
