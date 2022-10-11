@@ -98,15 +98,18 @@ class TicTacToe:
             return computer_move
         else:
             # data exists in brain file checking if relevant data is present or not
-            length_of_occupied_coordinates = len(self.__occupied_coordinates)
-            loosing_game_data = []
-            for data in data_in_brain:
-                check_list_result = self.__check_list_equality(data, self.__occupied_coordinates,
-                                                               length_of_occupied_coordinates)
-                if check_list_result is True:
-                    loosing_game_data.append(data)
 
-            if len(loosing_game_data) != 0:
+            # Filtering out the user moves from occupied coordinates
+            # even position's data will be of user
+            user_moves = range(0, len(self.__occupied_coordinates), 2)
+            lost_game_user_moves = []
+            for data in data_in_brain:
+                check_list_result = self.__check_list_equality(data, user_moves,
+                                                               len(user_moves))
+                if check_list_result is True:
+                    lost_game_user_moves.append(data)
+
+            if len(lost_game_user_moves) != 0:
                 # need to apply intelligence before move
                 pass
             else:
