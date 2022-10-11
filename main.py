@@ -13,7 +13,7 @@ for step in range(obj.number_of_steps):
                 continue
             else:
                 break
-        obj.input(step, user_input)
+        obj.input(user_input)
     else:
         # computer move
         computer_move = obj.get_move()

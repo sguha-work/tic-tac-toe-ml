@@ -75,7 +75,7 @@ class TicTacToe:
         else:
             return False
 
-    def input(self, step, move_coordinates):
+    def input(self, move_coordinates):
         self.__occupied_coordinates.append(move_coordinates)
         self.__log_move_to_game_file()
 
@@ -83,10 +83,13 @@ class TicTacToe:
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
+        computer_move=''
         if len(data_in_brain) == 0:
             unoccupied_coordinates = list(
                 set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
-            return random.choice(unoccupied_coordinates)
+            computer_move = random.choice(unoccupied_coordinates)
+            self.input(computer_move)
+            return computer_move
         else:
             length_of_occupied_coordinates = len(self.__occupied_coordinates)
             loosing_game_data = []
@@ -103,7 +106,9 @@ class TicTacToe:
                 # no data exists in brain so select move randomly
                 unoccupied_coordinates = list(
                     set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
-                return random.choice(unoccupied_coordinates)
+                computer_move = random.choice(unoccupied_coordinates)
+                self.input(computer_move)
+                return computer_move
 
     def computer_win(self):
         computer_moves = []
@@ -138,8 +143,9 @@ class TicTacToe:
         user_moves = []
         permuted_user_moves = []
         for index, move in enumerate(self.__occupied_coordinates):
-            if index % 2:
+            if index % 2 == 0:
                 user_moves.append(move)
+        print(f'occupied coordinates {self.__occupied_coordinates} user moves {user_moves}')
         flag = False
         if len(user_moves) == 3:
             for winning_move in self.__winning_coordinates:
