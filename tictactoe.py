@@ -85,6 +85,7 @@ class TicTacToe:
         coordinate = random.choice(unoccupied_coordinates)
         return coordinate
 
+    # This method returns the computer move
     def get_move(self):
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         data_in_brain = json.loads(self.__brain_file_pointer.read())
