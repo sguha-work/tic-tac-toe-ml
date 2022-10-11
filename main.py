@@ -2,11 +2,11 @@ from tictactoe import TicTacToe
 
 obj = TicTacToe()
 obj.__int__()
+user_input = ''
 for step in range(obj.number_of_steps):
-    user_input = ''
     if step % 2 == 0:
         while True:
-            print(f'Enter coordinate to put your move for step:{step + 1}')
+            print(f'Enter coordinate to put your move')
             user_input = input()
             if len(user_input) > 2 or obj.check_user_input(user_input) is False:
                 print('Invalid input, try again')
@@ -17,3 +17,4 @@ for step in range(obj.number_of_steps):
     else:
         # computer move
         computer_move = obj.get_move()
+        print(f'After step number {step+1} user move --> {user_input} computer move --> {computer_move}')

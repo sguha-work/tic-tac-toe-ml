@@ -5,6 +5,7 @@ import itertools
 import os
 import random
 
+
 class TicTacToe:
     __brain_file_name = 'brain.json'
     __brain_file_pointer = None
@@ -47,7 +48,6 @@ class TicTacToe:
 
     # this method logs the move(by user or by computer) to game file
     def __log_move_to_game_file(self):
-        print(f'file name {self.__game_file_name}')
         self.__game_file_pointer = open(self.__game_file_name, "w")
         self.__game_file_pointer.write(json.dumps(self.__occupied_coordinates))
         self.__game_file_pointer.close()
@@ -76,7 +76,6 @@ class TicTacToe:
             return False
 
     def input(self, step, move_coordinates):
-        print(f"step number {step}! user input coordinate {move_coordinates}")
         self.__occupied_coordinates.append(move_coordinates)
         self.__log_move_to_game_file()
 
@@ -84,27 +83,33 @@ class TicTacToe:
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
-        length_of_occupied_coordinates = len(self.__occupied_coordinates)
-        loosing_game_data = []
-        for data in data_in_brain:
-            check_list_result = self.__check_list_equality(data, self.__occupied_coordinates,
-                                                           length_of_occupied_coordinates)
-            if check_list_result is True:
-                loosing_game_data.append(data)
-
-        if len(loosing_game_data) != 0:
-            # need to apply intelligence before move
-            pass
-        else:
-            # no data exists in brain so select move randomly
-            unoccupied_coordinates = list(set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
+        if len(data_in_brain) == 0:
+            unoccupied_coordinates = list(
+                set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
             return random.choice(unoccupied_coordinates)
+        else:
+            length_of_occupied_coordinates = len(self.__occupied_coordinates)
+            loosing_game_data = []
+            for data in data_in_brain:
+                check_list_result = self.__check_list_equality(data, self.__occupied_coordinates,
+                                                               length_of_occupied_coordinates)
+                if check_list_result is True:
+                    loosing_game_data.append(data)
+
+            if len(loosing_game_data) != 0:
+                # need to apply intelligence before move
+                pass
+            else:
+                # no data exists in brain so select move randomly
+                unoccupied_coordinates = list(
+                    set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
+                return random.choice(unoccupied_coordinates)
 
     def computer_win(self):
         computer_moves = []
         permuted_computer_moves = []
         for index, move in enumerate(self.__occupied_coordinates):
-            if index % 2 is 0:
+            if index % 2 == 0:
                 computer_moves.append(move)
         flag = False
         if len(computer_moves) == 3:
