@@ -17,4 +17,12 @@ for step in range(obj.number_of_steps):
     else:
         # computer move
         computer_move = obj.get_move()
-        print(f'After step number {step+1} user move --> {user_input} computer move --> {computer_move}')
+        print(f'After step number {step + 1} user move --> {user_input} computer move --> {computer_move}')
+    if obj.user_win() is True:
+        print('User wins Exiting')
+        break
+    if obj.computer_win() is True:
+        print('Computer wins Exiting')
+        break
+if obj.is_draw() is True:
+    print('Draw')
