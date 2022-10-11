@@ -79,18 +79,24 @@ class TicTacToe:
         self.__occupied_coordinates.append(move_coordinates)
         self.__log_move_to_game_file()
 
+    def __get_random_unoccupied_coordinate(self):
+        unoccupied_coordinates = list(
+            set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
+        coordinate = random.choice(unoccupied_coordinates)
+        return coordinate
+
     def get_move(self):
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
-        computer_move=''
+        computer_move = ''
         if len(data_in_brain) == 0:
-            unoccupied_coordinates = list(
-                set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
-            computer_move = random.choice(unoccupied_coordinates)
+            # no data exists in brain so selecting move randomly
+            computer_move = self.__get_random_unoccupied_coordinate()
             self.input(computer_move)
             return computer_move
         else:
+            # data exists in brain file checking if relevant data is present or not
             length_of_occupied_coordinates = len(self.__occupied_coordinates)
             loosing_game_data = []
             for data in data_in_brain:
@@ -103,10 +109,8 @@ class TicTacToe:
                 # need to apply intelligence before move
                 pass
             else:
-                # no data exists in brain so select move randomly
-                unoccupied_coordinates = list(
-                    set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
-                computer_move = random.choice(unoccupied_coordinates)
+                # no relevant data exists in brain so selecting move randomly
+                computer_move = self.__get_random_unoccupied_coordinate()
                 self.input(computer_move)
                 return computer_move
 
@@ -114,7 +118,7 @@ class TicTacToe:
         computer_moves = []
         permuted_computer_moves = []
         for index, move in enumerate(self.__occupied_coordinates):
-            if index % 2 == 0:
+            if index % 2 == 1:
                 computer_moves.append(move)
         flag = False
         if len(computer_moves) == 3:
