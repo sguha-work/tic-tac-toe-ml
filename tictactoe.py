@@ -7,6 +7,7 @@ import random
 
 
 class TicTacToe:
+    __first_move_by_computer = True
     __brain_file_name = 'brain.json'
     __brain_file_pointer = None
     # this variable will hold the present game file name
@@ -87,36 +88,43 @@ class TicTacToe:
 
     # This method returns the computer move
     def get_move(self):
-        self.__brain_file_pointer = open(self.__brain_file_name, 'r')
-        data_in_brain = json.loads(self.__brain_file_pointer.read())
-        self.__brain_file_pointer.close()
-        computer_move = ''
-        if len(data_in_brain) == 0:
-            # no data exists in brain so selecting move randomly
+        if self.__first_move_by_computer is True:
+             # if this is the first move of computer returning random move
+            self.__first_move_by_computer = False
             computer_move = self.__get_random_unoccupied_coordinate()
             self.input(computer_move)
             return computer_move
-        else:
-            # data exists in brain file checking if relevant data is present or not
-
-            # Filtering out the user moves from occupied coordinates
-            # even position's data will be of user
-            user_moves = range(0, len(self.__occupied_coordinates), 2)
-            lost_game_user_moves = []
-            for data in data_in_brain:
-                check_list_result = self.__check_list_equality(data, user_moves,
-                                                               len(user_moves))
-                if check_list_result is True:
-                    lost_game_user_moves.append(data)
-
-            if len(lost_game_user_moves) != 0:
-                # need to apply intelligence before move
-                pass
-            else:
-                # no relevant data exists in brain so selecting move randomly
+        else:    
+            self.__brain_file_pointer = open(self.__brain_file_name, 'r')
+            data_in_brain = json.loads(self.__brain_file_pointer.read())
+            self.__brain_file_pointer.close()
+            computer_move = ''
+            if len(data_in_brain) == 0:
+                # no data exists in brain so selecting move randomly
                 computer_move = self.__get_random_unoccupied_coordinate()
                 self.input(computer_move)
                 return computer_move
+            else:
+                # data exists in brain file checking if relevant data is present or not
+
+                # Filtering out the user moves from occupied coordinates
+                # even position's data will be of user
+                user_moves = range(0, len(self.__occupied_coordinates), 2)
+                lost_game_user_moves = []
+                for data in data_in_brain:
+                    check_list_result = self.__check_list_equality(data, user_moves,
+                                                                len(user_moves))
+                    if check_list_result is True:
+                        lost_game_user_moves.append(data)
+
+                if len(lost_game_user_moves) != 0:
+                    # need to apply intelligence before move
+                    pass
+                else:
+                    # no relevant data exists in brain so selecting move randomly
+                    computer_move = self.__get_random_unoccupied_coordinate()
+                    self.input(computer_move)
+                    return computer_move
 
     def computer_win(self):
         computer_moves = []
