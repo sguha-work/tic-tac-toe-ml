@@ -57,10 +57,11 @@ class TicTacToe:
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         existing_data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
-        for data in self.__occupied_coordinates:
-            existing_data_in_brain.append(data)
+        existing_data_in_brain.append(self.__occupied_coordinates)
         self.__brain_file_pointer = open(self.__brain_file_name, 'w')
+        print(f' data->{json.dumps(existing_data_in_brain)}')
         self.__brain_file_pointer.write(json.dumps(existing_data_in_brain))
+        self.__brain_file_pointer.close()
 
     def __check_list_equality(self, list1, list2, length):
         flag = True
@@ -126,8 +127,17 @@ class TicTacToe:
 
                     if len(lost_game_moves) != 0:
                         # need to apply intelligence before move
-                        
-                        pass
+                        vulnerable_coordinates = []
+                        for lost_game_move in lost_game_moves:
+                            vulnerable_coordinates.append(lost_game_move[len(self.__occupied_coordinates)])
+                        safe_coordinates = list(
+                            set(self.__valid_moves).symmetric_difference(set(vulnerable_coordinates)))
+                        if len(safe_coordinates) == 1:
+                            computer_move = safe_coordinates[0]
+                        else:
+                            computer_move = random.choice(safe_coordinates)
+                        self.input(computer_move)
+                        return computer_move
                     else:
                         # no relevant data exists in brain so selecting move randomly
                         computer_move = self.__get_random_unoccupied_coordinate()
@@ -136,6 +146,7 @@ class TicTacToe:
             else:
                 # logic to return winning move by computer should go here
                 pass
+
     def computer_win(self):
         computer_moves = []
         permuted_computer_moves = []
@@ -164,7 +175,7 @@ class TicTacToe:
                     break
         return flag
 
-    def user_win(self):
+    def user_win(self, update_brain_file=True):
         # filtering user moves from occupied coordinates
         user_moves = []
         permuted_user_moves = []
@@ -193,13 +204,13 @@ class TicTacToe:
                 if flag is True:
                     break
         # as user wins logging the move to brain for computer
-        if flag is True:
+        if flag is True and update_brain_file is True:
             self.__update_brain_file()
-            pass
+
         return flag
 
     def is_draw(self):
-        if self.computer_win() is False and self.user_win() is False:
+        if self.computer_win() is False and self.user_win(False) is False:
             return True
         else:
             return False
