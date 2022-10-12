@@ -52,11 +52,11 @@ class TicTacToe:
         self.__game_file_pointer.write(json.dumps(self.__occupied_coordinates))
         self.__game_file_pointer.close()
 
-    def __update_brain_file(self, data_to_write):
+    def __update_brain_file(self):
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         existing_data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
-        for data in data_to_write:
+        for data in self.__occupied_coordinates:
             existing_data_in_brain.append(data)
         self.__brain_file_pointer = open(self.__brain_file_name, 'w')
         self.__brain_file_pointer.write(json.dumps(existing_data_in_brain))
@@ -176,10 +176,7 @@ class TicTacToe:
                     break
         # as user wins logging the move to brain for computer
         if flag is True:
-            data_to_write = [user_moves]
-            if len(permuted_user_moves):
-                data_to_write = permuted_user_moves
-            self.__update_brain_file(data_to_write)
+            self.__update_brain_file()
             pass
         return flag
 
