@@ -59,7 +59,6 @@ class TicTacToe:
         self.__brain_file_pointer.close()
         existing_data_in_brain.append(self.__occupied_coordinates)
         self.__brain_file_pointer = open(self.__brain_file_name, 'w')
-        print(f' data->{json.dumps(existing_data_in_brain)}')
         self.__brain_file_pointer.write(json.dumps(existing_data_in_brain))
         self.__brain_file_pointer.close()
 
@@ -72,10 +71,14 @@ class TicTacToe:
         return flag
 
     def check_user_input(self, user_input):
-        if user_input in self.__valid_moves:
-            return True
-        else:
+        # if user has given a coordinate which is already occupied rejecting it
+        if user_input in self.__occupied_coordinates:
             return False
+        else:
+            if user_input in self.__valid_moves:
+                return True
+            else:
+                return False
 
     def input(self, move_coordinates):
         self.__occupied_coordinates.append(move_coordinates)
