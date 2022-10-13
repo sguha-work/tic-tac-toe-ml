@@ -4,6 +4,7 @@ import json
 import itertools
 import os
 import random
+import numpy
 
 
 class TicTacToe:
@@ -53,6 +54,12 @@ class TicTacToe:
         self.__game_file_pointer.write(json.dumps(self.__occupied_coordinates))
         self.__game_file_pointer.close()
 
+    def __belongs_to(self, list1, list2):
+        for data in list1:
+            if numpy.array_equal(data, list2):
+                return True
+        return False
+
     def __update_brain_file(self):
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         existing_data_in_brain = json.loads(self.__brain_file_pointer.read())
@@ -61,9 +68,7 @@ class TicTacToe:
         user_moves = self.__occupied_coordinates[0::2]  # getting even position's values
         computer_moves = self.__occupied_coordinates[1::2]  # getting odd position's value
         for user_move in itertools.permutations(user_moves):
-            print(f'user moves {user_move}')
             for computer_move in itertools.permutations(computer_moves):
-                print(f'computer move {computer_move}')
                 new_list = []
                 loop_length = len(user_move) + len(computer_move)
                 user_move_index = 0
@@ -75,7 +80,8 @@ class TicTacToe:
                     else:
                         new_list.append(computer_move[computer_move_index])
                         computer_move_index += 1
-                existing_data_in_brain.append(new_list)
+                if self.__belongs_to(existing_data_in_brain, new_list) is False:
+                    existing_data_in_brain.append(new_list)
 
         self.__brain_file_pointer = open(self.__brain_file_name, 'w')
         self.__brain_file_pointer.write(json.dumps(existing_data_in_brain))
