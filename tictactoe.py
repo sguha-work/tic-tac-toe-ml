@@ -57,7 +57,26 @@ class TicTacToe:
         self.__brain_file_pointer = open(self.__brain_file_name, 'r')
         existing_data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
-        existing_data_in_brain.append(self.__occupied_coordinates)
+        # preparing permuted data for brain file
+        user_moves = range(0, len(self.__occupied_coordinates), 2)
+        computer_moves = range(1, len(self.__occupied_coordinates), 2)
+        permuted_user_moves = itertools.combinations(user_moves, len(user_moves))
+        permuted_computer_moves = itertools.combinations(user_moves, len(computer_moves))
+        for user_move in permuted_user_moves:
+            for computer_move in permuted_computer_moves:
+                new_list = []
+                loop_length = len(user_move) + len(computer_move)
+                user_move_index = 0
+                computer_move_index = 0
+                for index in range(loop_length):
+                    if index % 2 == 0:
+                        new_list.append(user_move[user_move_index])
+                        user_move_index += 1
+                    else:
+                        new_list.append(computer_move[computer_move_index])
+                        computer_move_index += 1
+                existing_data_in_brain.append(new_list)
+
         self.__brain_file_pointer = open(self.__brain_file_name, 'w')
         self.__brain_file_pointer.write(json.dumps(existing_data_in_brain))
         self.__brain_file_pointer.close()
