@@ -58,12 +58,12 @@ class TicTacToe:
         existing_data_in_brain = json.loads(self.__brain_file_pointer.read())
         self.__brain_file_pointer.close()
         # preparing permuted data for brain file
-        user_moves = range(0, len(self.__occupied_coordinates), 2)
-        computer_moves = range(1, len(self.__occupied_coordinates), 2)
-        permuted_user_moves = itertools.combinations(user_moves, len(user_moves))
-        permuted_computer_moves = itertools.combinations(user_moves, len(computer_moves))
-        for user_move in permuted_user_moves:
-            for computer_move in permuted_computer_moves:
+        user_moves = self.__occupied_coordinates[0::2]  # getting even position's values
+        computer_moves = self.__occupied_coordinates[1::2]  # getting odd position's value
+        for user_move in itertools.permutations(user_moves):
+            print(f'user moves {user_move}')
+            for computer_move in itertools.permutations(computer_moves):
+                print(f'computer move {computer_move}')
                 new_list = []
                 loop_length = len(user_move) + len(computer_move)
                 user_move_index = 0
