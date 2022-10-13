@@ -145,11 +145,10 @@ class TicTacToe:
                     # even position's data will be of user
                     lost_game_moves = []
                     for data in data_in_brain:
-                        check_list_result = self.__check_list_equality(data, self.__occupied_coordinates,
-                                                                       len(self.__occupied_coordinates))
+                        check_list_result = self.__check_list_equality(data[0::2], self.__occupied_coordinates[0::2],
+                                                                       len(self.__occupied_coordinates[0::2]))
                         if check_list_result is True:
                             lost_game_moves.append(data)
-                    print(f'lost game moves {lost_game_moves}')
                     if len(lost_game_moves) != 0:
                         # need to apply intelligence before move
                         vulnerable_coordinates = []
