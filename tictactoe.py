@@ -54,6 +54,7 @@ class TicTacToe:
         self.__game_file_pointer.write(json.dumps(self.__occupied_coordinates))
         self.__game_file_pointer.close()
 
+    # This method checks list2 belongs under list1 or not, list1 is 2d array or list of lists
     def __belongs_to_lists(self, list1, list2):
         for data in list1:
             if numpy.array_equal(data, list2):
@@ -199,6 +200,7 @@ class TicTacToe:
                 computer_move = computer_winning_move
         self.input(computer_move)
         return computer_move
+    
     def computer_win(self):
         computer_moves = []
         permuted_computer_moves = []
