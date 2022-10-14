@@ -30,7 +30,7 @@ class TicTacToe:
         ['00', '11', '22'],
         ['02', '11', '20']
     ]
-    number_of_steps = 6
+    number_of_steps = 9
 
     def __int__(self):
         if not os.path.isdir("games"):
