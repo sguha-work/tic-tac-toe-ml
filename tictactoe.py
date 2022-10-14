@@ -54,6 +54,17 @@ class TicTacToe:
         self.__game_file_pointer.write(json.dumps(self.__occupied_coordinates))
         self.__game_file_pointer.close()
 
+    def __differentiate(self, list1, list2):
+        large_list = None
+        small_list = None
+        if len(list1) > len(list2):
+            large_list = list1
+            small_list = list2
+        else:
+            large_list = list2
+            small_list = list1
+        return list(set(large_list) - set(small_list))
+
     # This method checks list2 belongs under list1 or not, list1 is 2d array or list of lists
     def __belongs_to_lists(self, list1, list2):
         for data in list1:
@@ -121,8 +132,7 @@ class TicTacToe:
         return return_value
 
     def __get_random_unoccupied_coordinate(self):
-        unoccupied_coordinates = list(
-            set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
+        unoccupied_coordinates = self.__differentiate(self.__valid_moves, self.__occupied_coordinates)
         coordinate = random.choice(unoccupied_coordinates)
         return coordinate
 
@@ -183,11 +193,9 @@ class TicTacToe:
                                     vulnerable_coordinates.append(lost_game_move[len(self.__occupied_coordinates)])
                             print(f'vulnerable coordinates {vulnerable_coordinates}')
                             # filtering out safe coordinates by comparing valid moves and vulnerable coordinates
-                            safe_coordinates = list(
-                                set(self.__valid_moves).symmetric_difference(set(vulnerable_coordinates)))
+                            safe_coordinates = self.__differentiate(self.__valid_moves, vulnerable_coordinates)
                             # filtering out occupied coordinates from safe coordinates
-                            safe_coordinates = list(
-                                set(safe_coordinates).symmetric_difference(set(self.__occupied_coordinates)))
+                            safe_coordinates = self.__differentiate(safe_coordinates, self.__occupied_coordinates)
                             print(f'safe coordinates {safe_coordinates}')
                             if len(safe_coordinates) == 1:
                                 computer_move = safe_coordinates[0]
@@ -205,7 +213,7 @@ class TicTacToe:
                 computer_move = computer_winning_move
         self.input(computer_move)
         return computer_move
-    
+
     def computer_win(self):
         computer_moves = []
         permuted_computer_moves = []
