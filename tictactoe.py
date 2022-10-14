@@ -137,12 +137,11 @@ class TicTacToe:
 
     # This method returns the computer move
     def get_move(self):
+        computer_move = ''
         if self.__first_move_by_computer is True:
             # if this is the first move of computer returning random move
             self.__first_move_by_computer = False
             computer_move = self.__get_random_unoccupied_coordinate()
-            self.input(computer_move)
-            return computer_move
         else:
             computer_winning_move = self.__get_winning_move()
             if computer_winning_move is False:
@@ -155,8 +154,6 @@ class TicTacToe:
                     if len(data_in_brain) == 0:
                         # no data exists in brain so selecting move randomly
                         computer_move = self.__get_random_unoccupied_coordinate()
-                        self.input(computer_move)
-                        return computer_move
                     else:
                         # data exists in brain file checking if relevant data is present or not
 
@@ -190,23 +187,18 @@ class TicTacToe:
                                 computer_move = safe_coordinates[0]
                             else:
                                 computer_move = random.choice(safe_coordinates)
-                            self.input(computer_move)
-                            return computer_move
+
                         else:
                             # no relevant data exists in brain so selecting move randomly
                             computer_move = self.__get_random_unoccupied_coordinate()
-                            self.input(computer_move)
-                            return computer_move
+
                 else:
                     computer_move = user_winning_move
-                    self.input(computer_move)
-                    return computer_move
             else:
                 # logic to return winning move by computer should go here
                 computer_move = computer_winning_move
-                self.input(computer_move)
-                return computer_move
-
+        self.input(computer_move)
+        return computer_move
     def computer_win(self):
         computer_moves = []
         permuted_computer_moves = []
