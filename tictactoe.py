@@ -107,7 +107,13 @@ class TicTacToe:
     # This method checcks if computer can win on its next move or not, if yes then returns the winning move
     # or else returns False
     def __get_winning_move(self):
-        return False
+        computer_moves = self.__occupied_coordinates[1::2]
+        return_value = False
+        for winning_moves in self.__winning_coordinates:
+            if numpy.array_equal(winning_moves, computer_moves):
+                return_value = winning_moves[2]
+                break
+        return return_value
 
     def __get_random_unoccupied_coordinate(self):
         unoccupied_coordinates = list(
@@ -138,7 +144,8 @@ class TicTacToe:
             self.input(computer_move)
             return computer_move
         else:
-            if self.__get_winning_move() is False:
+            computer_winning_move = self.__get_winning_move()
+            if computer_winning_move is False:
                 # if user can win on his/her next move then identifying that and make that move as computer's next move
                 user_winning_move = self.__is_user_can_win_on_next_move()
                 if user_winning_move is False:
@@ -196,7 +203,9 @@ class TicTacToe:
                     return computer_move
             else:
                 # logic to return winning move by computer should go here
-                pass
+                computer_move = computer_winning_move
+                self.input(computer_move)
+                return computer_move
 
     def computer_win(self):
         computer_moves = []
