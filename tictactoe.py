@@ -100,9 +100,11 @@ class TicTacToe:
         user_moves = self.__occupied_coordinates[0::2]
         return_value = False
         for winning_moves in self.__winning_coordinates:
-            if numpy.array_equal(winning_moves, user_moves):
+            if self.__check_list_equality(winning_moves, user_moves, len(user_moves)) is True:
                 return_value = winning_moves[2]
                 break
+        if return_value in self.__occupied_coordinates:
+            return_value = False
         return return_value
 
     # This method checcks if computer can win on its next move or not, if yes then returns the winning move
@@ -114,6 +116,8 @@ class TicTacToe:
             if numpy.array_equal(winning_moves, computer_moves):
                 return_value = winning_moves[2]
                 break
+        if return_value in self.__occupied_coordinates:
+            return_value = False
         return return_value
 
     def __get_random_unoccupied_coordinate(self):
@@ -148,6 +152,7 @@ class TicTacToe:
             if computer_winning_move is False:
                 # if user can win on his/her next move then identifying that and make that move as computer's next move
                 user_winning_move = self.__is_user_can_win_on_next_move()
+                print(f'user_winning_move {user_winning_move}')
                 if user_winning_move is False:
                     self.__brain_file_pointer = open(self.__brain_file_name, 'r')
                     data_in_brain = json.loads(self.__brain_file_pointer.read())
