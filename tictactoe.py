@@ -54,7 +54,7 @@ class TicTacToe:
         self.__game_file_pointer.write(json.dumps(self.__occupied_coordinates))
         self.__game_file_pointer.close()
 
-    def __belongs_to(self, list1, list2):
+    def __belongs_to_lists(self, list1, list2):
         for data in list1:
             if numpy.array_equal(data, list2):
                 return True
@@ -80,7 +80,7 @@ class TicTacToe:
                     else:
                         new_list.append(computer_move[computer_move_index])
                         computer_move_index += 1
-                if self.__belongs_to(existing_data_in_brain, new_list) is False:
+                if self.__belongs_to_lists(existing_data_in_brain, new_list) is False:
                     existing_data_in_brain.append(new_list)
 
         self.__brain_file_pointer = open(self.__brain_file_name, 'w')
@@ -94,6 +94,26 @@ class TicTacToe:
                 flag = False
                 break
         return flag
+
+    def __is_user_can_win_on_next_move(self):
+        user_moves = self.__occupied_coordinates[0::2]
+        return_value = False
+        for winning_moves in self.__winning_coordinates:
+            if numpy.array_equal(winning_moves, user_moves):
+                return_value = winning_moves[2]
+                break
+        return return_value
+
+    # This method checcks if computer can win on its next move or not, if yes then returns the winning move
+    # or else returns False
+    def __get_winning_move(self):
+        return False
+
+    def __get_random_unoccupied_coordinate(self):
+        unoccupied_coordinates = list(
+            set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
+        coordinate = random.choice(unoccupied_coordinates)
+        return coordinate
 
     def check_user_input(self, user_input):
         # if user has given a coordinate which is already occupied rejecting it
@@ -109,17 +129,6 @@ class TicTacToe:
         self.__occupied_coordinates.append(move_coordinates)
         self.__log_move_to_game_file()
 
-    # This method checcks if computer can win on its next move or not, if yes then returns the winning move
-    # or else returns False
-    def __get_winning_move(self):
-        return False
-
-    def __get_random_unoccupied_coordinate(self):
-        unoccupied_coordinates = list(
-            set(self.__valid_moves).symmetric_difference(set(self.__occupied_coordinates)))
-        coordinate = random.choice(unoccupied_coordinates)
-        return coordinate
-
     # This method returns the computer move
     def get_move(self):
         if self.__first_move_by_computer is True:
@@ -130,43 +139,61 @@ class TicTacToe:
             return computer_move
         else:
             if self.__get_winning_move() is False:
-                self.__brain_file_pointer = open(self.__brain_file_name, 'r')
-                data_in_brain = json.loads(self.__brain_file_pointer.read())
-                self.__brain_file_pointer.close()
-                if len(data_in_brain) == 0:
-                    # no data exists in brain so selecting move randomly
-                    computer_move = self.__get_random_unoccupied_coordinate()
-                    self.input(computer_move)
-                    return computer_move
-                else:
-                    # data exists in brain file checking if relevant data is present or not
-
-                    # Filtering out the user moves from occupied coordinates
-                    # even position's data will be of user
-                    lost_game_moves = []
-                    for data in data_in_brain:
-                        check_list_result = self.__check_list_equality(data[0::2], self.__occupied_coordinates[0::2],
-                                                                       len(self.__occupied_coordinates[0::2]))
-                        if check_list_result is True:
-                            lost_game_moves.append(data)
-                    if len(lost_game_moves) != 0:
-                        # need to apply intelligence before move
-                        vulnerable_coordinates = []
-                        for lost_game_move in lost_game_moves:
-                            vulnerable_coordinates.append(lost_game_move[len(self.__occupied_coordinates)])
-                        safe_coordinates = list(
-                            set(self.__valid_moves).symmetric_difference(set(vulnerable_coordinates)))
-                        if len(safe_coordinates) == 1:
-                            computer_move = safe_coordinates[0]
-                        else:
-                            computer_move = random.choice(safe_coordinates)
-                        self.input(computer_move)
-                        return computer_move
-                    else:
-                        # no relevant data exists in brain so selecting move randomly
+                # if user can win on his/her next move then identifying that and make that move as computer's next move
+                user_winning_move = self.__is_user_can_win_on_next_move()
+                if user_winning_move is False:
+                    self.__brain_file_pointer = open(self.__brain_file_name, 'r')
+                    data_in_brain = json.loads(self.__brain_file_pointer.read())
+                    self.__brain_file_pointer.close()
+                    if len(data_in_brain) == 0:
+                        # no data exists in brain so selecting move randomly
                         computer_move = self.__get_random_unoccupied_coordinate()
                         self.input(computer_move)
                         return computer_move
+                    else:
+                        # data exists in brain file checking if relevant data is present or not
+
+                        # Filtering out the user moves from occupied coordinates
+                        # even position's data will be of user
+                        lost_game_moves = []
+                        for data in data_in_brain:
+                            check_list_result = self.__check_list_equality(data[0::2],
+                                                                           self.__occupied_coordinates[0::2],
+                                                                           len(self.__occupied_coordinates[0::2]))
+                            if check_list_result is True:
+                                lost_game_moves.append(data)
+                        print(f'lost game moves {lost_game_moves}')
+                        if len(lost_game_moves) != 0:
+                            # need to apply intelligence before move
+                            vulnerable_coordinates = []
+                            for lost_game_move in lost_game_moves:
+                                if lost_game_move[len(self.__occupied_coordinates)] in vulnerable_coordinates:
+                                    pass
+                                else:
+                                    vulnerable_coordinates.append(lost_game_move[len(self.__occupied_coordinates)])
+                            print(f'vulnerable coordinates {vulnerable_coordinates}')
+                            # filtering out safe coordinates by comparing valid moves and vulnerable coordinates
+                            safe_coordinates = list(
+                                set(self.__valid_moves).symmetric_difference(set(vulnerable_coordinates)))
+                            # filtering out occupied coordinates from safe coordinates
+                            safe_coordinates = list(
+                                set(safe_coordinates).symmetric_difference(set(self.__occupied_coordinates)))
+                            print(f'safe coordinates {safe_coordinates}')
+                            if len(safe_coordinates) == 1:
+                                computer_move = safe_coordinates[0]
+                            else:
+                                computer_move = random.choice(safe_coordinates)
+                            self.input(computer_move)
+                            return computer_move
+                        else:
+                            # no relevant data exists in brain so selecting move randomly
+                            computer_move = self.__get_random_unoccupied_coordinate()
+                            self.input(computer_move)
+                            return computer_move
+                else:
+                    computer_move = user_winning_move
+                    self.input(computer_move)
+                    return computer_move
             else:
                 # logic to return winning move by computer should go here
                 pass
