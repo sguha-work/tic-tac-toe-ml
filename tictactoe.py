@@ -136,6 +136,15 @@ class TicTacToe:
         coordinate = random.choice(unoccupied_coordinates)
         return coordinate
 
+    def __filter_occupied_coordinates(self, moves):
+        filtered_moves = []
+        for move in moves:
+            if move in self.__occupied_coordinates:
+                continue
+            else:
+                filtered_moves.append(move)
+        return filtered_moves
+
     def check_user_input(self, user_input):
         # if user has given a coordinate which is already occupied rejecting it
         if user_input in self.__occupied_coordinates:
@@ -196,7 +205,7 @@ class TicTacToe:
                             safe_coordinates = self.__differentiate(self.__valid_moves, vulnerable_coordinates)
                             print(f'safe coordinate step 1 {safe_coordinates}')
                             # filtering out occupied coordinates from safe coordinates
-                            safe_coordinates = self.__differentiate(safe_coordinates, self.__occupied_coordinates)
+                            safe_coordinates = self.__filter_occupied_coordinates(safe_coordinates)
                             print(f'safe coordinates--> {safe_coordinates}')
                             if len(safe_coordinates) == 1:
                                 computer_move = safe_coordinates[0]
