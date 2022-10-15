@@ -140,9 +140,12 @@ class TicTacToe:
         return return_value
 
     def __get_random_unoccupied_coordinate(self):
-        unoccupied_coordinates = self.__differentiate(self.__valid_moves, self.__occupied_coordinates)
-        coordinate = random.choice(unoccupied_coordinates)
-        return coordinate
+        if '22' in self.__occupied_coordinates:
+            unoccupied_coordinates = self.__differentiate(self.__valid_moves, self.__occupied_coordinates)
+            coordinate = random.choice(unoccupied_coordinates)
+            return coordinate
+        else:
+            return '22'
 
     def __filter_occupied_coordinates(self, moves):
         filtered_moves = []
