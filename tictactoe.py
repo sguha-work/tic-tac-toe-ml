@@ -224,61 +224,36 @@ class TicTacToe:
         return computer_move
 
     def computer_win(self):
-        computer_moves = []
+        computer_moves = self.__occupied_coordinates[1::2]
         permuted_computer_moves = []
-        for index, move in enumerate(self.__occupied_coordinates):
-            if index % 2 == 1:
-                computer_moves.append(move)
+        for permuted_move in itertools.permutations(computer_moves):
+            permuted_computer_moves.append(list(permuted_move))
+        print(f'occupied coordinates {self.__occupied_coordinates} computer moves {computer_moves}')
         flag = False
-        if len(computer_moves) == 3:
-            for winning_move in self.__winning_coordinates:
-                if winning_move[0] == computer_moves[0] and winning_move[1] == computer_moves[1] and winning_move[2] == \
-                        computer_moves[2]:
+        for move in self.__winning_coordinates:
+            for computer_move in permuted_computer_moves:
+                if move[0] in computer_move and move[1] in computer_move and move[2] in computer_move:
                     flag = True
                     break
-        else:
-            for computer_move in itertools.combinations(computer_moves, 3):
-                for permuted_move in itertools.permutations(list(computer_move)):
-                    permuted_computer_moves.append(list(permuted_move))
-
-            for permuted_computer_move in permuted_computer_moves:
-                for winning_move in self.__winning_coordinates:
-                    if winning_move[0] == permuted_computer_move[0] and permuted_computer_move[1] == \
-                            computer_moves[1] and winning_move[2] == permuted_computer_move[2]:
-                        flag = True
-                        break
-                if flag is True:
-                    break
+            if flag is True:
+                break
         return flag
 
     def user_win(self, update_brain_file=True):
         # filtering user moves from occupied coordinates
-        user_moves = []
+        user_moves = self.__occupied_coordinates[0::2]
         permuted_user_moves = []
-        for index, move in enumerate(self.__occupied_coordinates):
-            if index % 2 == 0:
-                user_moves.append(move)
+        for permuted_move in itertools.permutations(user_moves):
+            permuted_user_moves.append(list(permuted_move))
         print(f'occupied coordinates {self.__occupied_coordinates} user moves {user_moves}')
         flag = False
-        if len(user_moves) == 3:
-            for winning_move in self.__winning_coordinates:
-                if winning_move[0] == user_moves[0] and winning_move[1] == user_moves[1] and winning_move[2] == \
-                        user_moves[2]:
+        for move in self.__winning_coordinates:
+            for user_move in permuted_user_moves:
+                if move[0] in user_move and move[1] in user_move and move[2] in user_move:
                     flag = True
                     break
-        else:
-            for user_move in itertools.combinations(user_moves, 3):
-                for permuted_move in itertools.permutations(list(user_move)):
-                    permuted_user_moves.append(list(permuted_move))
-
-            for permuted_user_move in permuted_user_moves:
-                for winning_move in self.__winning_coordinates:
-                    if winning_move[0] == permuted_user_move[0] and permuted_user_move[1] == user_moves[1] and \
-                            winning_move[2] == permuted_user_move[2]:
-                        flag = True
-                        break
-                if flag is True:
-                    break
+            if flag is True:
+                break
         # as user wins logging the move to brain for computer
         if flag is True and update_brain_file is True:
             self.__update_brain_file()
