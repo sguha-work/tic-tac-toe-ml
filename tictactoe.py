@@ -109,10 +109,18 @@ class TicTacToe:
 
     def __is_user_can_win_on_next_move(self):
         user_moves = self.__occupied_coordinates[0::2]
+        permuted_user_moves = []
+        for permuted_move in itertools.permutations(user_moves):
+            permuted_user_moves.append(list(permuted_move))
         return_value = False
-        for winning_moves in self.__winning_coordinates:
-            if self.__check_list_equality(winning_moves, user_moves, len(user_moves)) is True:
-                return_value = winning_moves[2]
+        flag = False
+        for move in self.__winning_coordinates:
+            for user_move in permuted_user_moves:
+                if move[0] in user_move and move[1] in user_move:
+                    return_value = move[2]
+                    flag = True
+                    break
+            if flag is True:
                 break
         if return_value in self.__occupied_coordinates:
             return_value = False
@@ -228,7 +236,6 @@ class TicTacToe:
         permuted_computer_moves = []
         for permuted_move in itertools.permutations(computer_moves):
             permuted_computer_moves.append(list(permuted_move))
-        print(f'occupied coordinates {self.__occupied_coordinates} computer moves {computer_moves}')
         flag = False
         for move in self.__winning_coordinates:
             for computer_move in permuted_computer_moves:
@@ -237,6 +244,8 @@ class TicTacToe:
                     break
             if flag is True:
                 break
+        if flag is True:
+            print(f'occupied coordinates->{self.__occupied_coordinates}')
         return flag
 
     def user_win(self, update_brain_file=True):
@@ -245,7 +254,6 @@ class TicTacToe:
         permuted_user_moves = []
         for permuted_move in itertools.permutations(user_moves):
             permuted_user_moves.append(list(permuted_move))
-        print(f'occupied coordinates {self.__occupied_coordinates} user moves {user_moves}')
         flag = False
         for move in self.__winning_coordinates:
             for user_move in permuted_user_moves:
@@ -257,6 +265,7 @@ class TicTacToe:
         # as user wins logging the move to brain for computer
         if flag is True and update_brain_file is True:
             self.__update_brain_file()
+            print(f'occupied coordinates->{self.__occupied_coordinates}')
 
         return flag
 
