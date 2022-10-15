@@ -194,14 +194,14 @@ class TicTacToe:
                             print(f'vulnerable coordinates {vulnerable_coordinates}')
                             # filtering out safe coordinates by comparing valid moves and vulnerable coordinates
                             safe_coordinates = self.__differentiate(self.__valid_moves, vulnerable_coordinates)
+                            print(f'safe coordinate step 1 {safe_coordinates}')
                             # filtering out occupied coordinates from safe coordinates
                             safe_coordinates = self.__differentiate(safe_coordinates, self.__occupied_coordinates)
-                            print(f'safe coordinates {safe_coordinates}')
+                            print(f'safe coordinates--> {safe_coordinates}')
                             if len(safe_coordinates) == 1:
                                 computer_move = safe_coordinates[0]
                             else:
                                 computer_move = random.choice(safe_coordinates)
-
                         else:
                             # no relevant data exists in brain so selecting move randomly
                             computer_move = self.__get_random_unoccupied_coordinate()
